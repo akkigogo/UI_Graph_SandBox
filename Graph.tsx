@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Graph, Node, Link } from './types';
 import { NODE_RADIUS } from './const';
 import { getAdjustedCoordinates, calculateFontSize } from './util';
@@ -8,9 +8,10 @@ type GraphProps = {
   onMouseDown: (e: React.MouseEvent<SVGCircleElement>, node: Node) => void;
   onMouseMove: (e: React.MouseEvent) => void;
   onMouseUp: () => void;
+  deleteLink: (link : Link) => void;
 };
 
-const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, onMouseDown }) => {
+const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, onMouseDown, deleteLink }) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -25,6 +26,34 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
       svg.removeEventListener('mouseup', onMouseUp);
     };
   }, [onMouseMove, onMouseUp]);
+
+  const [selectedLink, setSelectedLink] = useState<Link | null>(null);
+
+  const handleLinkClick = (link: Link, e: React.MouseEvent) => {
+    setSelectedLink(link); // 辺を選択状態にする
+  };
+
+  const calculateTrashIconPosition = (link: Link): { x: number; y: number } | null => {
+    const sourceNode = graph.nodes.find((node) => node.id === link.source);
+    const targetNode = graph.nodes.find((node) => node.id === link.target);
+    if (sourceNode && targetNode) {
+      // 矢印の右上にゴミ箱を配置する座標を計算
+      const { x1, y1, x2, y2 } = getAdjustedCoordinates(sourceNode, targetNode);
+      const x = (x1 + x2) / 2;
+      const y = (y1 + y2) / 2;
+      return {x, y};
+    }
+    return null;
+  }
+
+  const trashIconPosition = selectedLink ? calculateTrashIconPosition(selectedLink) : null;
+
+  const handleTrashIconClick = () => {
+    if (selectedLink) {
+      deleteLink(selectedLink);
+      setSelectedLink(null); // 選択を解除
+    }
+  };
 
   return (
     <svg ref={svgRef} width="1800" height="600">
@@ -55,9 +84,10 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke="black"
               strokeWidth="2"
               markerEnd="url(#arrow)" /* 矢印マーカーを適用 */
+              stroke={selectedLink === link ? 'red' : 'black'}
+              onClick={(e) => handleLinkClick(link, e)} 
             />
           );
         }
@@ -82,6 +112,24 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
         </g>
         );
       }
+      )}
+
+      {/* ゴミ箱アイコン */}
+      {trashIconPosition && (
+        <g
+          onClick={handleTrashIconClick}
+          style={{ cursor: 'pointer' }}
+        >
+          <text
+            x={trashIconPosition.x + 10}
+            y={trashIconPosition.y + 15}
+            textAnchor="middle"
+            fontSize="12"
+            fill="white"
+          >
+            🗑️
+          </text>
+        </g>
       )}
     </svg>
   );
