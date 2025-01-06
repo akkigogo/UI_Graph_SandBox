@@ -94,7 +94,6 @@ const App: React.FC = () => {
       <GraphComponent graph={graph} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseDown={onMouseDown}
       deleteLink={deleteLink} deleteNode={deleteNode}/>
       <div>
-        <h2>辺を追加</h2>
         <input
           type="text"
           placeholder="出発ノードID"

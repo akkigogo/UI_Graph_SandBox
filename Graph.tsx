@@ -144,6 +144,7 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
             cy={node.y}
             r={NODE_RADIUS}
             fill="skyblue"
+            stroke={selectedNode === node ? 'red' : 'none'}
             onMouseDown={(e) => onMouseDown(e, node)}
             onClick={(e) => handleNodeClick(node, e)}
           />
