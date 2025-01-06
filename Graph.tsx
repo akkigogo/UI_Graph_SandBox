@@ -30,6 +30,7 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
   const [selectedLink, setSelectedLink] = useState<Link | null>(null);
 
   const handleLinkClick = (link: Link, e: React.MouseEvent) => {
+    e.stopPropagation(); // 他のクリックイベントを妨げる
     setSelectedLink(link); // 辺を選択状態にする
   };
 
@@ -55,8 +56,12 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
     }
   };
 
+  const handleSvgClick = () => {
+    setSelectedLink(null); // 選択を解除
+  };
+
   return (
-    <svg ref={svgRef} width="1800" height="600">
+    <svg ref={svgRef} width="1800" height="600" onClick={handleSvgClick}>
         {/* 矢印マーカーの定義 */}
       <defs>
         <marker
