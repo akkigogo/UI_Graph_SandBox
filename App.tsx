@@ -80,12 +80,19 @@ const App: React.FC = () => {
       return { ...prevGraph, links: newLinks };
     });
   }
-  
+
+  const deleteNode = (node : Node) => {
+    setGraph((prevGraph) => {
+      const newNodes = prevGraph.nodes.filter((n) => n !== node);
+      const newLinks = prevGraph.links.filter((l) => l.source !== node.id && l.target !== node.id);
+      return { nodes: newNodes, links: newLinks };
+    });
+  }
 
   return (
     <div className="App">
       <GraphComponent graph={graph} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseDown={onMouseDown}
-      deleteLink={deleteLink} />
+      deleteLink={deleteLink} deleteNode={deleteNode}/>
       <div>
         <h2>辺を追加</h2>
         <input

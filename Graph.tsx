@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Graph, Node, Link } from './types';
-import { NODE_RADIUS } from './const';
+import { NODE_RADIUS, TRASH_ICON_SIZE } from './const';
 import { getAdjustedCoordinates, calculateFontSize } from './util';
 
 type GraphProps = {
@@ -9,9 +9,10 @@ type GraphProps = {
   onMouseMove: (e: React.MouseEvent) => void;
   onMouseUp: () => void;
   deleteLink: (link : Link) => void;
+  deleteNode: (node : Node) => void;
 };
 
-const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, onMouseDown, deleteLink }) => {
+const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, onMouseDown, deleteLink, deleteNode }) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -28,10 +29,18 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
   }, [onMouseMove, onMouseUp]);
 
   const [selectedLink, setSelectedLink] = useState<Link | null>(null);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
   const handleLinkClick = (link: Link, e: React.MouseEvent) => {
     e.stopPropagation(); // 他のクリックイベントを妨げる
-    setSelectedLink(link); // 辺を選択状態にする
+    setSelectedLink(link);
+    setSelectedNode(null);
+  };
+
+  const handleNodeClick = (node: Node, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedNode(node);
+    setSelectedLink(null);
   };
 
   const calculateTrashIconPosition = (link: Link): { x: number; y: number } | null => {
@@ -47,17 +56,27 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
     return null;
   }
 
-  const trashIconPosition = selectedLink ? calculateTrashIconPosition(selectedLink) : null;
+  const calculateTrashIconForNodePosition = (node: Node): { x: number; y: number } | null => {
+    return {x: node.x + NODE_RADIUS * 0.8, y: node.y - NODE_RADIUS * 0.8};
+  }
+
+  const trashIconPosition = selectedLink ? calculateTrashIconPosition(selectedLink) : 
+    selectedNode ? calculateTrashIconForNodePosition(selectedNode) : null;
 
   const handleTrashIconClick = () => {
     if (selectedLink) {
       deleteLink(selectedLink);
-      setSelectedLink(null); // 選択を解除
+      setSelectedLink(null);
+    }
+    else if (selectedNode) {
+      deleteNode(selectedNode);
+      setSelectedNode(null);
     }
   };
 
   const handleSvgClick = () => {
-    setSelectedLink(null); // 選択を解除
+    setSelectedLink(null);
+    setSelectedNode(null);
   };
 
   return (
@@ -126,6 +145,7 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
             r={NODE_RADIUS}
             fill="skyblue"
             onMouseDown={(e) => onMouseDown(e, node)}
+            onClick={(e) => handleNodeClick(node, e)}
           />
           <text x={node.x} y={node.y} fill="black" textAnchor="middle" dominantBaseline="middle" fontSize = {fontSize}>
             {node.id}
@@ -142,16 +162,17 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
           style={{ cursor: 'pointer' }}
         >
           <text
-            x={trashIconPosition.x + 10}
-            y={trashIconPosition.y + 15}
+            x={trashIconPosition.x}
+            y={trashIconPosition.y}
             textAnchor="middle"
-            fontSize="12"
+            fontSize={TRASH_ICON_SIZE}
             fill="white"
           >
             🗑️
           </text>
         </g>
       )}
+
     </svg>
   );
 };
