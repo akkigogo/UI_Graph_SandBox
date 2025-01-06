@@ -72,6 +72,22 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
         </marker>
       </defs>
 
+      <defs>
+        <marker
+          id="arrow-red"
+          markerWidth="10"
+          markerHeight="10"
+          refX="10" /* 矢印の位置を調整 */
+          refY="5"
+          orient="auto"
+          markerUnits="strokeWidth"
+        >
+          <path d="M0,0 L10,5 L0,10 Z" fill="red" />
+        </marker>
+      </defs>
+
+      
+
       {graph.links.map((link, index) => {
         const sourceNode = graph.nodes.find((node) => node.id === link.source);
         const targetNode = graph.nodes.find((node) => node.id === link.target);
@@ -85,7 +101,7 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
               x2={x2}
               y2={y2}
               strokeWidth="2"
-              markerEnd="url(#arrow)" /* 矢印マーカーを適用 */
+              markerEnd={selectedLink === link ? "url(#arrow-red)" : "url(#arrow)"} /* 矢印マーカーを適用 */
               stroke={selectedLink === link ? 'red' : 'black'}
               onClick={(e) => handleLinkClick(link, e)} 
             />
