@@ -100,9 +100,9 @@ const App: React.FC = () => {
       try {
         const { nodes, links } = await importEdgesFromExcel(file, sheetName, sourceCol, targetCol, graph);
 
-        setGraph((prevGraph) => ({
-          nodes: [...prevGraph.nodes, ...nodes],
-          links: [...prevGraph.links, ...links],
+        setGraph(() => ({
+          nodes: nodes,
+          links: links,
         }));
       } catch (error) {
         alert("エラーが発生しました: " + (error as Error).message);

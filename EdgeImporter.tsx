@@ -18,12 +18,15 @@ export const importEdgesFromExcel = async (
   }
 
   const newLinks: Link[] = [];
-  // すでに存在するノード
   const newNodes: Node[] = [];
 
   // newNodesにすでに存在するノードを追加
     graph.nodes.forEach((node) => {
         newNodes.push(node);
+    });
+  // newLinksにすでに存在するリンクを追加
+    graph.links.forEach((link) => {
+        newLinks.push(link);
     });
 
   sheet.eachRow((row, rowIndex) => {

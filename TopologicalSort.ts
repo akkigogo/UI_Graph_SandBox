@@ -47,9 +47,6 @@ export const topologicalSort = (graph: Graph): string[] => {
             console.log(node);
         }
     });
-    console.log(graph.nodes.length);
-    console.log(graph.nodes);
-    console.log(sortedOrder.length);
     throw new Error("グラフにサイクルが含まれています。トポロジカルソートはできません。");
   }
 
