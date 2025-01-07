@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { Graph, Node, Link } from "./type";
+import { Graph, Node, Link } from "./types";
 import { randomPosition } from './NodeArrange';
 
 export const importEdgesFromExcel = async (
