@@ -1,8 +1,7 @@
-// types.ts
 export type Node = {
     id: string;
-    x: number; // ノードのX座標
-    y: number; // ノードのY座標
+    x: number;
+    y: number;
   };
   
   export type Link = {

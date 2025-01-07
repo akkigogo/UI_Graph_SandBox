@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Graph, Node, Link } from './types';
-import { NODE_RADIUS, TRASH_ICON_SIZE } from './const';
+import { NODE_RADIUS, SVG_HEIGHT, SVG_WIDTH, TRASH_ICON_SIZE } from './const';
 import { getAdjustedCoordinates, calculateFontSize } from './util';
 
 type GraphProps = {
@@ -80,7 +80,7 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
   };
 
   return (
-    <svg ref={svgRef} width="1800" height="700" onClick={handleSvgClick}>
+    <svg ref={svgRef} width={SVG_WIDTH} height={SVG_HEIGHT} onClick={handleSvgClick}>
         {/* 矢印マーカーの定義 */}
       <defs>
         <marker
@@ -156,7 +156,6 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
       }
       )}
 
-      {/* ゴミ箱アイコン */}
       {trashIconPosition && (
         <g
           onClick={handleTrashIconClick}

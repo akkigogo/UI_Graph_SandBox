@@ -3,6 +3,7 @@ import GraphComponent from './Graph';
 import { Graph, Node, Link } from './types';
 import { NODE_RADIUS } from './const';
 import { importEdgesFromExcel } from './EdgeImporter';
+import { arrangeNodes, randomPosition } from './NodeArrange';
 
 const generateGraph = (): Graph => {
   return { nodes: [], links: [] };
@@ -16,10 +17,7 @@ const App: React.FC = () => {
   const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const generateRandomPosition = () => {
-    return {
-      x: Math.floor(Math.random() * 700) + 50,
-      y: Math.floor(Math.random() * 500) + 50,
-    };
+    return randomPosition();
   };
 
   // ノードの位置を更新
@@ -134,6 +132,10 @@ const App: React.FC = () => {
       <div>
         <h3>Excelファイルから辺を追加</h3>
         <input type="file" accept=".xlsx" onChange={handleFileUpload} />
+      </div>
+      <div>
+        <h3>ソート</h3>
+        <button onClick={() => {arrangeNodes(graph)}}>トポロジカルソート</button>
       </div>
     </div>
   );

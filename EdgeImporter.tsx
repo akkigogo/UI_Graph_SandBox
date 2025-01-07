@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import { Graph, Node, Link } from "./type";
+import { randomPosition } from './NodeArrange';
 
 export const importEdgesFromExcel = async (
   file: File,
@@ -17,7 +18,13 @@ export const importEdgesFromExcel = async (
   }
 
   const newLinks: Link[] = [];
+  // すでに存在するノード
   const newNodes: Node[] = [];
+
+  // newNodesにすでに存在するノードを追加
+    graph.nodes.forEach((node) => {
+        newNodes.push(node);
+    });
 
   sheet.eachRow((row, rowIndex) => {
     if (rowIndex === 1) return; // ヘッダーをスキップ
@@ -34,15 +41,15 @@ export const importEdgesFromExcel = async (
       if (!newNodes.find((node) => node.id === source)) {
         newNodes.push({
           id: source,
-          x: Math.random() * 700 + 50,
-          y: Math.random() * 500 + 50,
+          x : randomPosition().x,
+          y : randomPosition().y
         });
       }
       if (!newNodes.find((node) => node.id === target)) {
         newNodes.push({
           id: target,
-          x: Math.random() * 700 + 50,
-          y: Math.random() * 500 + 50,
+          x : randomPosition().x,
+          y : randomPosition().y
         });
       }
 
