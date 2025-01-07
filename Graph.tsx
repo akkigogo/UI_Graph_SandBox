@@ -80,7 +80,7 @@ const GraphComponent: React.FC<GraphProps> = ({ graph, onMouseMove, onMouseUp, o
   };
 
   return (
-    <svg ref={svgRef} width="1800" height="600" onClick={handleSvgClick}>
+    <svg ref={svgRef} width="1800" height="700" onClick={handleSvgClick}>
         {/* 矢印マーカーの定義 */}
       <defs>
         <marker
