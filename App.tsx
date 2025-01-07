@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import GraphComponent from './Graph';
 import { Graph, Node, Link } from './types';
 import { NODE_RADIUS } from './const';
+import { importEdgesFromExcel } from './EdgeImporter';
 
 const generateGraph = (): Graph => {
   return { nodes: [], links: [] };
@@ -89,6 +90,28 @@ const App: React.FC = () => {
     });
   }
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const sheetName = prompt("読み込むシート名を入力してください", "Sheet1");
+    const sourceCol = prompt("出発ノードの列名を入力してください", "A");
+    const targetCol = prompt("到達ノードの列名を入力してください", "B");
+
+    if (sheetName && sourceCol && targetCol) {
+      try {
+        const { nodes, links } = await importEdgesFromExcel(file, sheetName, sourceCol, targetCol, graph);
+
+        setGraph((prevGraph) => ({
+          nodes: [...prevGraph.nodes, ...nodes],
+          links: [...prevGraph.links, ...links],
+        }));
+      } catch (error) {
+        alert("エラーが発生しました: " + (error as Error).message);
+      }
+    }
+  };
+
   return (
     <div className="App">
       <GraphComponent graph={graph} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseDown={onMouseDown}
@@ -107,6 +130,10 @@ const App: React.FC = () => {
           onChange={(e) => setTarget(e.target.value)}
         />
         <button onClick={addLink}>辺を追加</button>
+      </div>
+      <div>
+        <h3>Excelファイルから辺を追加</h3>
+        <input type="file" accept=".xlsx" onChange={handleFileUpload} />
       </div>
     </div>
   );
