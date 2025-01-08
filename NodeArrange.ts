@@ -40,16 +40,15 @@ export const arrangeNodes = (graph : Graph) : void => {
         }
         levelMap.get(value)!.push(key);
     });
-
+ 
     // ノードの配置
     levelMap.forEach((nodeIds, level) => {
         const x = (SVG_WIDTH / (levelMap.size + 1)) * (level + 1);
-        const y = SVG_HEIGHT / 2;
         nodeIds.forEach((nodeId, index) => {
             const node = graph.nodes.find(node => node.id === nodeId);
             if (node) {
                 node.x = x;
-                node.y = y + (index - nodeIds.length / 2) * NODE_RADIUS * 2.5;
+                node.y = SVG_HEIGHT / (nodeIds.length + 1) * (index + 1);
             }
         });
     });
