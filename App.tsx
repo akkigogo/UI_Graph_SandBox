@@ -3,7 +3,7 @@ import GraphComponent from './Graph';
 import { Graph, Node, Link } from './types';
 import { NODE_RADIUS } from './const';
 import { importEdgesFromExcel } from './EdgeImporter';
-import { arrangeNodes, randomPosition } from './NodeArrange';
+import { arrangeNodes, randomPosition, sa } from './NodeArrange';
 
 const generateGraph = (): Graph => {
   return { nodes: [], links: [] };
@@ -136,6 +136,10 @@ const App: React.FC = () => {
       <div>
         <h3>ソート</h3>
         <button onClick={() => {arrangeNodes(graph)}}>トポロジカルソート</button>
+      </div>
+      <div>
+        <h3>交差数最適化</h3>
+        <button onClick={() => sa(graph, 3, 1, 10000)}>交差数最適化</button>
       </div>
     </div>
   );
